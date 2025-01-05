@@ -44,3 +44,16 @@ def get_tweets(query, start, end):
     tweets = tweepy.Cursor(api.search_tweets, q=query, lang="en", since=start, until=end).items(1000)
     return [tweet for tweet in tweets if not is_news_tweet(tweet)]
 
+#trying to filter out news account tweets so it shows more public opinion
+def is_news_tweet(tweet):
+    news_keywords = ["news", "breaking", "breaking news", "update", "updates", "headline"]
+    if any(keyword in tweet.text.lower() for keyword in news_keywords):
+        return True
+    #also factors out celebrities
+    if tweet.user.verified:
+        return True
+    return False
+first_term = get_tweets(query, range_1_start, range_1_end)
+campaign_term = get_tweets(query, range_2_start, range_2_end)
+#for later analysis
+all_tweets = first_term + campaign_term
